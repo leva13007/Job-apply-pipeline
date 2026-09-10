@@ -55,6 +55,63 @@ apply <N> <source> [--method api|browser|auto] [--channel <rating|name>]
 **Пагінація до мети:** якщо після фільтра дублікатів і Stage 3 (fit-match) назбиралось менше за `N` придатних вакансій — пайплайн продовжує пошук (наступні сторінки видачі), а не зупиняється передчасно. Метрика з `brief.md` (soft target ≤1 година) — orientir, не hard stop.
 **Вихід:** список кандидатів (`id` — run-local лічильник унікальності, `title`, `company`, `location`, `date`, повний `url` як є), з запасом понад `N` під подальший відсів.
 
+**Example:**
+```bash
+node src/cli.js \
+  --keywords "javascript engineer" \
+  --location "United Kingdom" \
+  --work-type hybrid \
+  --recency 604800 \
+  --count 5
+[
+  {
+    "id": 1,
+    "title": "Front-End JavaScript/TypeScript/React/AG Grid Software Engineer : Trading : £120-180k plus excellent bonus : London",
+    "company": "Hunter Bond",
+    "companyUrl": "https://uk.linkedin.com/company/hunter-bond?trk=public_jobs_jserp-result_job-search-card-subtitle",
+    "location": "London Area, United Kingdom",
+    "date": "2026-09-10",
+    "url": "https://uk.linkedin.com/jobs/view/front-end-javascript-typescript-react-ag-grid-software-engineer-trading-%C2%A3120-180k-plus-excellent-bonus-london-at-hunter-bond-4463488300"
+  },
+  {
+    "id": 2,
+    "title": "Software Engineer (TypeScript, React/React Native, Node.js)",
+    "company": "Oliver Bernard",
+    "companyUrl": "https://uk.linkedin.com/company/oliverbernard?trk=public_jobs_jserp-result_job-search-card-subtitle",
+    "location": "London Area, United Kingdom",
+    "date": "2026-09-08",
+    "url": "https://uk.linkedin.com/jobs/view/software-engineer-typescript-react-react-native-node-js-at-oliver-bernard-4462286425"
+  },
+  {
+    "id": 3,
+    "title": "Senior Frontend Engineer",
+    "company": "Version 1",
+    "companyUrl": "https://ie.linkedin.com/company/version-1?trk=public_jobs_jserp-result_job-search-card-subtitle",
+    "location": "Belfast, Northern Ireland, United Kingdom",
+    "date": "2026-09-06",
+    "url": "https://uk.linkedin.com/jobs/view/senior-frontend-engineer-at-version-1-4230840352"
+  },
+  {
+    "id": 4,
+    "title": "Senior Front-End Developer (React, TypeScript) - VP, FX Options Pricing",
+    "company": "Citi",
+    "companyUrl": "https://www.linkedin.com/company/citi?trk=public_jobs_jserp-result_job-search-card-subtitle",
+    "location": "London, England, United Kingdom",
+    "date": "2026-09-08",
+    "url": "https://uk.linkedin.com/jobs/view/senior-front-end-developer-react-typescript-vp-fx-options-pricing-at-citi-4463556597"
+  },
+  {
+    "id": 5,
+    "title": "Senior Frontend Engineer (React/React Native)",
+    "company": "Emma - we are hiring!",
+    "companyUrl": "https://uk.linkedin.com/company/emma-technologies-ltd?trk=public_jobs_jserp-result_job-search-card-subtitle",
+    "location": "Islington, England, United Kingdom",
+    "date": "2026-09-04",
+    "url": "https://uk.linkedin.com/jobs/view/senior-frontend-engineer-react-react-native-at-emma-we-are-hiring%21-4461181287"
+  }
+]
+```
+
 ### Stage 2 — Extract vacancy data
 **Вхід:** список кандидатів зі Stage 1 — `id` (run-local лічильник унікальності) і `url` (query-стрипнутий, з Stage 1).
 
