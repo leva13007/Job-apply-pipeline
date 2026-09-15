@@ -157,7 +157,7 @@ node src/cli.js \
 
 **Example:**
 ```bash
-node src/cli.js --keywords "backend engineer" --location "United Kingdom" --count 5 | node src/stage2-cli.js
+node src/cli.js --keywords "backend engineer" --location "United Kingdom" --count 3 | node src/stage2-cli.js
 [
   {
     "id": 1,
@@ -222,53 +222,35 @@ node src/cli.js --keywords "backend engineer" --location "United Kingdom" --coun
     },
     "isMeetTheHiringTeam": true,
     "fetchStatus": "ok"
-  },
-  {
-    "id": 4,
-    "url": "https://uk.linkedin.com/jobs/view/senior-backend-engineer-revenue-at-arrive-4455237926",
-    "date": "2026-09-07",
-    "title": "Senior Backend Engineer - Revenue",
-    "company": "Arrive",
-    "companyUrl": "https://se.linkedin.com/company/arrive?trk=public_jobs_topcard-org-name",
-    "location": "London, England, United Kingdom",
-    "description": "We’ve signed up to an ambitious journey. Join us!\n\nAs Arrive, we guide customers and communities towards brighter futures and more livable cities, it isn’t a challenge just anyone could take on. Luckily, we have something to help us make it happen. Our people and our values. We Arrive Curious, Focused and Together. Just as our entire brand is inspired by the North Star, the shining light leading travelers to their destinations since time began, our values guide us. They help us be at our best. For our customers. For the cities and communities we serve. For ourselves. As a global team, we are transforming urban mobility. Let’s grow better, together.\n\nThe Role\n\nAs a Senior Backend Engineer, you'll design and build scalable backend services, APIs and infrastructure that enable pricing capabilities and revenue growth. Working closely with Product, Pricing, Data and Engineering teams, you'll translate commercial ideas into robust technical solutions while helping shape the future architecture of our revenue platform. This is a hands-on engineering role where you'll take ownership of solutions from design through to delivery, working on systems that directly impact business performance.\n\nWhat You'll Be Doing\n\n- Design, develop and maintain scalable backend services using PHP and Laravel.\n\n- Build APIs and backend infrastructure that support pricing, revenue and marketplace functionality.\n\n- Develop and maintain operational data models and data pipelines.\n\n- Work closely with the Head of Pricing to implement commercial initiatives and new pricing capabilities.\n\n- Build reliable, scalable and observable systems using modern engineering practices, including CI/CD, automated testing and monitoring.\n\n- Contribute to technical design, architecture discussions and peer reviews.\n\n- Continuously improve the performance, scalability and resilience of revenue-critical systems.\n\nAbout You\n\nYou'll be an experienced backend engineer who enjoys solving complex technical problems and working collaboratively across teams.\n\nYou'll Ideally Have\n\n-  5+ years' experience building production backend systems\n\n-  Strong commercial experience with PHP and Laravel\n\n-  Experience building scalable backend services and REST APIs\n\n-  Strong SQL skills and experience working with relational databases\n\n-  Familiarity with AWS or similar cloud environments\n\n-  Experience with CI/CD pipelines and automated testing\n\n-  Strong understanding of software architecture, scalability and system design\n\n-  Excellent communication skills and the ability to explain technical concepts to non-technical stakeholders\n\n-  A proactive mindset with the ability to work independently and take ownership..\n\nNice to Have\n\nExperience with any of the following would be beneficial, but isn't essential:\n\n-  Pricing or revenue optimisation platforms\n\n-  Marketplace or e-commerce environments\n\n-  Data pipelines or operational data models\n\n-  Modern data tooling or orchestration platforms\n\n-  Experimentation or A/B testing platforms\n\n-  Exposure to machine learning workflows or analytics platforms\n\nAbout Arrive\n\nArrive, including brands like EasyPark, Flowbird, RingGo, ParkMobile and Parkopedia, is a leading global mobility platform. Present in over 90 countries and 20,000 cities, the company helps people and decision-makers make smarter decisions about urban mobility and ease the experience of travel worldwide. Arrive delivers a unique combination of the core ingredients to make cities more livable: from smart payments and optimized car parks to data-driven traffic reduction and support for reinvestment in public transport and green space. It’s about more than function, it’s about saving time and simplifying the experience of travel for everyone. Travel is more than a journey, it’s how you Arrive.",
-    "seniority": "Mid-Senior level",
-    "employmentType": "Full-time",
-    "jobFunction": "Engineering and Information Technology",
-    "industries": "IT Services and IT Consulting",
-    "isActive": true,
-    "applyChannel": "offsite",
-    "applyTrackingControlName": "public_jobs_contextual-sign-in-modal_ssr-ui-lib-outlet-button",
-    "hasOffsiteIcon": true,
-    "isMeetTheHiringTeam": false,
-    "fetchStatus": "ok"
-  },
-  {
-    "id": 5,
-    "url": "https://uk.linkedin.com/jobs/view/senior-software-engineer-backend-at-apron-4453414683",
-    "date": "2026-08-19",
-    "title": "Senior Software Engineer | Backend",
-    "company": "Apron",
-    "companyUrl": "https://uk.linkedin.com/company/getapron?trk=public_jobs_topcard-org-name",
-    "location": "London, England, United Kingdom",
-    "description": "About Apron\n\nSmall businesses are the backbone of the economy, but the systems they rely on for payments are slow, manual and were never built for them. Apron is fixing that. We digitise and simplify how SMBs manage cash flow: capturing invoices, issuing expense cards, and moving money in one place.\n\nFounded in 2021, we've grown to ~100 people across the UK, Germany, Spain and raised $50M, backed by Index Ventures, Bessemer Venture Partners, Zinal Grow and Tony Fadell.\n\nOur next phase of growth isn’t incremental. We’re building a category-defining, global fintech business with a clear path to significant revenue scale and international expansion. This phase requires not just a great product but a world-class engineering team.\n\nOur engineering culture\n\n- We build with the customer in mind. Top-tier technology, in service of making their lives genuinely easier.\n\n- We own our work. We plan, break it down, and ship it end to end.\n\n- We embrace the complexity of finance. Money means intricate business logic and real edge cases. Precision matters here.\n\n- We write code we're proud of. Fast doesn't mean sloppy, we build for the long term.\n\n- We use AI where it helps. The best tools available, used to build better products faster.\n\nWhat You’ll Own\n\nWe're hiring more than one engineer for different teams, this means:\n\n- You’ll build and scale the backend powering our core product lines like Bill Pay or Apron Card and the systems our business depends on like fraud detection.\n\n- You'll work cross-functionally with Frontend Engineers, Product Managers and Product Designers to ship new features from discovery through to production.\n\n- You’ll design financial integrations where security and speed both matter.\n\n- You’ll share your experience with others, driving innovation, proactively suggesting improvements and raising the bar for the team.\n\nWhat You’ll Need\n\n- 8+ years of continuous experience as a backend engineer.\n\n- Previous in-house experience working in a product-led + fast-paced environment (startup or Tech company).\n\n- Proficient in JVM-based languages, ideally Kotlin, for server-side development.\n\n- Comfort with relational databases and the trade-offs that come with them at scale.\n\n- Keen attention to code quality, passion for efficient architecture, and commitment to optimising performance.\n\n- Would be a plus if you have:\n\n- Hands-on Kotlin experience.\n\n- Kubernetes and Terraform experience.\n\n- Deep Postgres experience: GIST indexes, partitioning, replication.\n\nWhat We Offer\n\n- Highly competitive salary + meaningful stock options\n\n- Pension plan with Nest\n\n- Health insurance (including Optical and Dental cover), Life Assurance\n\n- Enhanced parental leave\n\n- Weekly Deliveroo allowance\n\n- 29 days of holidays (on top of Bank holidays)\n\n- Flexible working hours\n\n- Hybrid work 3 days a week in our London (Liverpool Street) offices.\n\n- Cycle to Work scheme, Electric vehicle scheme\n\n- Visa sponsorship (when applicable)\n\nOur hiring process\n\nOur process is straightforward and runs at your pace. We aim to provide feedback in 24hrs.\n\n- Interview with our Recruiting team\n\n- 2 Technical Interviews\n\n- 2 Final Interviews with our Leadership team\n\n- Offer in 24hrs",
-    "seniority": "Mid-Senior level",
-    "employmentType": "Full-time",
-    "jobFunction": "Engineering and Information Technology",
-    "industries": "Financial Services",
-    "isActive": true,
-    "applyChannel": "offsite",
-    "applyTrackingControlName": "public_jobs_contextual-sign-in-modal_ssr-ui-lib-outlet-button",
-    "hasOffsiteIcon": true,
-    "isMeetTheHiringTeam": false,
-    "fetchStatus": "ok"
   }
 ]
 ```
 
 ### Stage 3 — Match / fit
 **Вхід:** vacancy input (Stage 2) + `base_cv.md` + `user_info.md`.
-**Дія:** матчинг вимог вакансії проти профілю — що важливе (веде CV), що допоміжне, що можна відкинути. Якщо вакансія не проходить обмеження з `user_info.md` (стек/рівень/локація/зарплата тощо) — вакансія пропускається (flag «skipped — fit»), у Stage 1 запускається пошук наступного кандидата на її місце.
+
+**Дія.** Stage 3 — це три незалежні перевірки, і в більшості з них LLM не потрібен:
+
+1. **Apply-channel rating (0–4)** — вже повністю зведено до коду ще на Stage 2 (HTML-сигнали, таблиця нижче). Тут лише використовується, не переозначається.
+2. **Hard fit filters (skip gate)** — детерміновані поля, чистий код, без LLM:
+
+   | поле | джерело | перевірка | впевненість |
+   |---|---|---|---|
+   | seniority | Stage 2 `seniority` (enum: Internship / Entry level / Associate / Mid-Senior level / Director / Executive) | mapping-таблиця проти цільового рівня(ів) з `Search criteria` | детерміновано |
+   | локація/remote | Stage 2 `location` + Stage 1 `f_WT` | рядкове/enum-порівняння з переважним форматом роботи + географією з `Search criteria` | детерміновано |
+   | employment type | Stage 2 `employmentType` | порівняння з перевагою користувача (якщо задана) | детерміновано |
+   | зарплата | best-effort число з `description` | діапазон проти мін./цілі з `Search criteria` | best-effort — числа часто нема в описі, тоді перевірка **пропускається**, а не провалюється |
+   | stack must-have | `description`+`title` | keyword/regex-пошук кожного must-have скіла, з таблицею синонімів (JS/JavaScript, TS/TypeScript тощо) | детерміновано, але з втратами — буквальний пошук пропускає перефразовані вимоги |
+   | stack nice-to-have | `description`+`title` | той самий keyword-пошук, **не gate** — йде в tie-break score (той самий tie-break принцип, що й у apply-channel rating нижче) | детерміновано |
+
+   Усе, крім stack must-have, достатньо однозначне для звичайного скрипта — LLM тут не потрібен.
+
+3. **Stack must-have — межові випадки: код позначає, LLM не вирішує тут.** Скрипт сам LLM не викликає й фінального рішення для цих кандидатів не приймає:
+   - якщо кандидат провалює **лише** must-have keyword(и) (жодного порушення seniority/локації/зарплати/employment type) — скрипт **не** ставить hard skip і **не** ставить pass, а віддає проміжний стан `needsLlmReview: true` з конкретним переліком відсутніх keyword'ів і повним `description`; фінальне рішення для таких кандидатів — Stage 3.5;
+   - якщо кандидат провалює будь-яке інше hard-поле — одразу skip, без LLM-рев'ю, `fitDecision` вже фінальний з коду;
+   - якщо провалено 100% must-have (опис не перетинається зі стеком узагалі) — теж одразу skip з коду, це вже не межовий випадок (точний поріг «скільки саме промахів ще вважати межовими» — TBD, див. Open questions).
+
+   Якщо вакансія не проходить hard filter — вакансія пропускається (flag «skipped — fit»), у Stage 1 запускається пошук наступного кандидата на її місце. Кандидати з `needsLlmReview: true` **не** вважаються ні пройденими, ні пропущеними — вони йдуть у Stage 3.5, і саме там `fitDecision` стає фінальним.
 
 **Apply-channel rating.** Кожній вакансії присвоюється рейтинг 0–4 за способом подачі — від найпасивнішого до найбільш «робочого» (найвищий шанс реального контакту з людиною):
 
@@ -286,10 +268,24 @@ node src/cli.js --keywords "backend engineer" --location "United Kingdom" --coun
 - якщо `--channel` заданий (явно або розпізнаний з природної мови запиту, див. «Команда запуску») — це **фільтр**: у квоту `N` йдуть лише вакансії з rating ≥ вказаного значення. Якщо таких не вистачає до `N` навіть після вичерпного пошуку (Stage 1) — пайплайн не знижує планку, а репортує нестачу в Stage 8 summary (той самий принцип «не знижувати бар для досягнення числа», що й при fit-skip).
 - якщо `--channel` не заданий — рейтинг використовується лише як **tie-breaker**: коли кандидатів, що пройшли fit, більше за `N`, у пріоритеті — вакансії з вищим rating.
 
-**Вихід:** content selection на CV-генерацію (Stage 4) для вакансій, що пройшли fit (і, за наявності, channel-фільтр).
+**Вихід:** vacancy input (Stage 2), доповнений полями коду — `fitDecision` (`pass`/`skip`, фінальний для всього, крім межових stack-випадків), `skipReason` (яке поле провалено, якщо skip з коду), `needsLlmReview`+`missingMustHave[]` (для межових stack-випадків — див. Stage 3.5), `tieBreakScore` (кількість nice-to-have збігів, для tie-break коли `--channel` не задано і кандидатів більше за `N`). Кандидати з `fitDecision: pass` йдуть напряму далі; кандидати з `needsLlmReview: true` — у Stage 3.5.
+
+### Stage 3.5 — LLM fit review (межові stack-випадки)
+**Тригер:** кандидати зі Stage 3 з `needsLlmReview: true` (провалили лише must-have keyword-перевірку, більше нічого).
+**Вхід:** повний candidate record зі Stage 3 (не лише `description`/`title`/`missingMustHave[]` — увесь запис, включно з уже визначеними `applyChannel`/`tieBreakScore`), плюс `base_cv.md` і `user_info.md` цілком (не лише секція `Search criteria` — `Constraints` теж впливає на рішення).
+
+**Дія.** Той самий LLM-агент, що виконує весь `apply` (уже так для Stage 4) — переглядає кожного такого кандидата за rubric:
+1. **Перечитати опис уважніше.** Для кожного `missingMustHave` — чи вимога насправді сформульована іншими словами/синонімом/суміжним інструментом в описі, якого не впіймав буквальний keyword-пошук Stage 3 (напр. «modern JS framework» замість буквального «React»).
+2. **Якщо в описі дійсно нічого немає — звірити з `base_cv.md`.** Чи є в canonical/extended pool рівнозначний або суміжний досвід, який чесно покриває цю вимогу (не «натягування» — той самий принцип чесності, що й «CV як реклама» в Stage 4, тільки в інший бік: тут перевіряємо, чи взагалі є що чесно показати, а не як це подати найкраще).
+3. **Звірити важливість вимоги з `user_info.md`.** `Search criteria`/`Constraints` можуть підказати, чи ця вимога — категоричний блокер (напр. відповідність праву на роботу, локація) чи радше бажаний, але не критичний пункт.
+4. **За замовчуванням — skip при щирій непевності.** Той самий принцип «не знижувати бар для досягнення квоти», що вже задокументований у Stage 1/Stage 3 «Вплив на відбір» — сумнів не конвертується в pass.
+
+Виносить фінальне `fitDecision` (`pass`/`skip`) і, якщо `skip`, короткий `skipReason` (яке саме missingMustHave не покрито і чому). Окремого LLM API-виклику/інфраструктури не додається — перевикористовується агент, що вже веде пайплайн, за тим самим принципом, що й Stage 5→6 handoff.
+
+**Вихід:** ті самі кандидати з фінальним `fitDecision` (без `needsLlmReview`), плюс `llmReviewed: true` — позначка для Stage 8 summary, скільки рішень пройшло через цей крок. Кандидати з `fitDecision: pass` (звідси і зі Stage 3 напряму) — це і є content selection на CV-генерацію (Stage 4), для вакансій, що пройшли fit (і, за наявності, channel-фільтр).
 
 ### Stage 4 — Generate CV
-**Вхід:** content selection (Stage 3) + `base_cv.md` + `user_info.md`.
+**Вхід:** content selection (Stage 3 / Stage 3.5) + `base_cv.md` + `user_info.md`.
 
 **Чому це не "просто згенеруй CV".** «Добери найкращі bullets під вакансію» — це судження, не детермінований алгоритм. У job_search skill (`tailor`) це судження робив сам Олег — перегляд і затвердження перед кожним використанням. У job_pipeline це судження приймає **той самий LLM-агент, що виконує `apply`** — Stage 4 не описує формулу підрахунку релевантності, а дає йому rubric, за яким приймати рішення:
 
@@ -339,7 +335,8 @@ node src/cli.js --keywords "backend engineer" --location "United Kingdom" --coun
 Наприкінці запуску (quota `N` досягнута, або кандидати на LinkedIn вичерпані) — підсумок у вигляді таблиці/списку:
 - скільки подано з `N` запитаних;
 - скільки пропущено як дублікат (dedup, Stage 1);
-- скільки пропущено як не fit (Stage 3);
+- скільки пропущено як не fit (Stage 3 hard filter + Stage 3.5 LLM review);
+- скільки межових stack-кандидатів пройшло через Stage 3.5 і яке рішення (pass/skip) — окремо від Stage 3 hard-skip, щоб бачити, наскільки часто буквальний keyword-пошук помиляється;
 - скільки провалилось технічно (Stage 5, «failed»);
 - скільки пройшло через technical handoff (Stage 5) — успішні, але з ручним кроком, і які саме кроки/джерела;
 - розбивка поданих за apply-channel rating (Stage 3) — скільки на кожному рівні 0–4, і чи вистачило до `N` за заданим `--channel` фільтром, якщо він був;
@@ -347,6 +344,10 @@ node src/cli.js --keywords "backend engineer" --location "United Kingdom" --coun
 - окремий блок: які записи `user_info.md` додані/оновлені за цей запуск (Stage 6).
 
 ## Open questions / TBD
+- Stage 3 hard fit filter: точна mapping-таблиця seniority (які з 6 LinkedIn enum-значень рахувати збігом для цільового рівня користувача — напр. чи задовольняє «Mid-Senior level» пошук «Senior», чи потрібен точний/сусідній збіг).
+- Stage 3 stack matching: джерело й підтримка таблиці синонімів (ручний список чи згенерований; хто оновлює її, коли з'являється новий must-have скіл без запису).
+- Stage 3 salary filter: regex/евристика витягування числа зарплати з вільного тексту `description` — на відміну від інших regex Stage 1/2, ще не перевірено емпірично.
+- Stage 3 LLM fallback: точний поріг «скільки відсутніх must-have ще вважати межовим випадком для LLM-рев'ю, а не автоматичним skip» (напр. 1 з 5 відсутній → рев'ю; 4 з 5 → одразу skip; точна межа TBD).
 - Точна схема колонок `applications.csv`.
 - Шлях temp-директорії для CV на етапі Stage 4 (до підтвердженої подачі).
 - Точний формат/toolchain рендеру CV (Stage 4) — переносити job_search-подібний content.js+generate.js+LibreOffice конвеєр, чи простіший прямий шлях (напр. Markdown/HTML → PDF) — не вирішено, `job_pipeline` навмисно незалежний від job_search-івської інфраструктури.
