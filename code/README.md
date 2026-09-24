@@ -6,7 +6,7 @@ Node.js implementation of Stage 1 (Search), Stage 2 (Extract vacancy data) and S
 - **Stage 2** takes those candidates and fetches each vacancy's public page directly to extract full details (description, seniority/employment type, apply channel, recruiter contact, etc).
 - **Stage 3** takes Stage 2 vacancies plus match criteria and applies the deterministic hard-fit filters (seniority/location/employment type/salary/stack must-have), computes the apply-channel rating, and flags borderline stack cases for the (not-yet-implemented) Stage 3.5 LLM review.
 
-**Scope of this implementation:** API path only. No browser-automation fallback (`--method browser`), no dedup against the applications tracker, no `user_info.md`/`base_cv.md` reading (criteria are passed as flags instead), no Stage 3.5 LLM review, no CV generation/apply/tracking — those depend on pipeline stages that don't exist yet (onboarding, Stage 3.5, Stage 4+). See each stage's "Limitations" section below.
+**Scope of this implementation:** API path only. No browser-automation fallback (`--method browser`), no dedup against the applications tracker, no `user_info.md` reading (criteria are passed as flags instead), no Stage 3.5 LLM review, no CV selection/apply/tracking — those depend on pipeline stages that don't exist yet (onboarding, Stage 3.5, Stage 4+). See each stage's "Limitations" section below.
 
 ## Requirements
 
