@@ -1,11 +1,12 @@
-# job-pipeline — Stage 1 & 2
+# job-pipeline — Stage 1, 2 & 3
 
-Node.js implementation of Stage 1 (Search) and Stage 2 (Extract vacancy data) from [`../docs/flow.md`](../docs/flow.md).
+Node.js implementation of Stage 1 (Search), Stage 2 (Extract vacancy data) and Stage 3 (Match / fit) from [`../docs/flow.md`](../docs/flow.md).
 
 - **Stage 1** scrapes LinkedIn's public "guest" job search endpoint and returns a deduplicated list of job candidates.
 - **Stage 2** takes those candidates and fetches each vacancy's public page directly to extract full details (description, seniority/employment type, apply channel, recruiter contact, etc).
+- **Stage 3** takes Stage 2 vacancies plus match criteria and applies the deterministic hard-fit filters (seniority/location/employment type/salary/stack must-have), computes the apply-channel rating, and flags borderline stack cases for the (not-yet-implemented) Stage 3.5 LLM review.
 
-**Scope of this implementation:** API path only. No browser-automation fallback (`--method browser`), no dedup against the applications tracker, no fit/channel filtering — those depend on pipeline stages that don't exist yet (Stage 3, Stage 7). See each stage's "Limitations" section below.
+**Scope of this implementation:** API path only. No browser-automation fallback (`--method browser`), no dedup against the applications tracker, no `user_info.md`/`base_cv.md` reading (criteria are passed as flags instead), no Stage 3.5 LLM review, no CV generation/apply/tracking — those depend on pipeline stages that don't exist yet (onboarding, Stage 3.5, Stage 4+). See each stage's "Limitations" section below.
 
 ## Requirements
 
@@ -203,4 +204,86 @@ See `../docs/flow.md` Stage 2 for full context. Not covered by this code yet:
 - **Apply-channel rating precision:** only the coarse onsite/offsite split (ratings {0,1} vs {2,3}) and the rating-4 "Meet the hiring team" signal are available. Distinguishing 0 vs 1 (Easy Apply vs. plain LinkedIn apply) and 2 vs 3 (external ATS vs. company site) is deferred to a future browser-automation step.
 - **`location`** on the detail page uses a best-guess, unconfirmed selector (`topcard__flavor--bullet`) — falls back to the Stage 1 candidate's `location` if it doesn't parse.
 - **`message-the-recruiter` block** (rating 4 / recruiter contact) was verified empirically on exactly one historical example (job ID `4458957079`); co-occurrence with offsite listings is unconfirmed.
-- No browser-automation fallback, no fit-matching (Stage 3), no tracker/archive writes (Stage 7).
+- No browser-automation fallback, no tracker/archive writes (Stage 7).
+
+## Stage 3 — Match / fit
+
+Takes Stage 2 vacancies plus match criteria (passed as flags — `user_info.md` doesn't exist yet, see Limitations) and, per vacancy: runs the deterministic hard-fit filters, matches must-have/nice-to-have stack keywords, and computes the apply-channel rating. Vacancies that fail on anything other than must-have stack are skipped straight from code; vacancies whose *only* problem is a partial must-have miss get `needsLlmReview: true` instead — final judgment on those is Stage 3.5, which this repo doesn't implement.
+
+### CLI usage
+
+```bash
+# pipe directly from Stage 1 -> Stage 2 -> Stage 3
+node src/cli.js --keywords "backend engineer" --location "United Kingdom" --count 5 \
+  | node src/stage2-cli.js \
+  | node src/stage3-cli.js --must-have node,typescript --location "United Kingdom" --channel 2
+
+# or from a saved Stage 2 file
+node src/stage3-cli.js --input vacancies.json --seniority "Mid-Senior level" --must-have react,typescript
+```
+
+#### Options
+
+| flag | required | description |
+|---|---|---|
+| `--input <file>` | no | read vacancies from this JSON file instead of stdin |
+| `--seniority <levels>` | no | comma-separated target LinkedIn seniority value(s), e.g. `"Mid-Senior level,Director"` |
+| `--seniority-adjacent` | no | allow ±1 seniority level as a match (default: exact match only) |
+| `--location <keywords>` | no | comma-separated location keyword(s), substring match against Stage 2 `location` |
+| `--employment-type <value>` | no | e.g. `"Full-time"` |
+| `--salary-min <number>` | no | minimum acceptable salary — best-effort, see Notes below |
+| `--must-have <skills>` | no | comma-separated must-have stack keywords |
+| `--nice-to-have <skills>` | no | comma-separated nice-to-have stack keywords — tie-break score only, not a gate |
+| `--synonyms <file>` | no | JSON file of `{skill: [synonym, ...]}`, merged over the built-in defaults |
+| `--channel <rating\|name>` | no | minimum apply-channel rating (`0`-`4`) or name (`easy-apply`/`linkedin-apply`/`external-ats`/`company-site`/`meet-the-hiring-team`) |
+| `--help` | no | print usage |
+
+Any flag can be omitted — a criterion that isn't given simply isn't checked (never treated as a failure).
+
+### Programmatic usage
+
+```js
+import { evaluateFit } from "./src/lib/linkedinFit.js";
+
+const result = evaluateFit(vacancy, {
+  seniority: ["Mid-Senior level"],
+  locations: ["United Kingdom"],
+  mustHave: ["node", "typescript"],
+  niceToHave: ["docker"],
+  channel: 2, // or "external-ats"
+});
+```
+
+### Output schema
+
+Stage 2's vacancy object, augmented with:
+
+```ts
+{
+  applyChannelRating: { min: number, max: number },       // known-guaranteed 0-4 range, see Notes
+  fitDecision?: "pass" | "skip",                            // absent while needsLlmReview is true
+  skipReason?: "seniority" | "location" | "employmentType" | "salary" | "stack",
+  needsLlmReview?: true,
+  missingMustHave?: string[],                               // only when needsLlmReview
+  tieBreakScore?: number,                                    // nice-to-have match count
+  channelDecision?: "pass" | "skip" | "unknown",             // only when --channel given and fitDecision === "pass"
+  channelUncertain?: boolean,                                 // true if the rating range straddles --channel's threshold
+}
+```
+
+### Notes / gotchas
+
+- **`applyChannelRating` is a range, not a number.** Stage 2's unauthenticated fetch only gives a coarse onsite/offsite split (`{0,1}` vs `{2,3}`) plus a reliable rating-4 signal — 0 vs 1 and 2 vs 3 aren't resolvable without a browser step (see `flow.md`). `--channel` filtering uses the range's guaranteed minimum, so it never lets a vacancy through it can't confirm; `channelUncertain: true` flags cases that might actually have qualified but couldn't be confirmed either way.
+- **Seniority matching defaults to exact.** `flow.md` leaves "does `Mid-Senior level` satisfy a `Senior` search" as an open question — this implementation matches LinkedIn's own 6 enum values exactly unless `--seniority-adjacent` is passed (±1 level tolerance).
+- **Salary extraction is a heuristic, not verified against real listings** (`flow.md` flags this as the one Stage 1-3 regex that hasn't been empirically checked). It scans `description` for money-like tokens and takes the largest as a proxy for "salary offered." No match found → the check is skipped, not failed.
+- **Stack synonym table is a small starter list**, not sourced from anywhere canonical — pass `--synonyms <file.json>` to extend/override it.
+- **`--location` is substring matching only** against Stage 2's `location` field — there's no `f_WT`/work-type signal on the Stage 2 vacancy object to combine it with (Stage 1's `--work-type` isn't carried through the pipeline yet).
+
+### Limitations / not implemented here
+
+See `../docs/flow.md` Stage 3 for full context. Not covered by this code yet:
+
+- **Stage 3.5** (LLM review of borderline must-have cases) — `needsLlmReview: true` candidates stop here; nothing resolves their final `fitDecision`.
+- **Reading criteria from `user_info.md`** — onboarding isn't implemented yet, same as Stage 1; this CLI takes criteria as flags instead.
+- **Quota-aware pagination** — nothing here re-triggers Stage 1 when too few vacancies pass; this CLI just evaluates whatever list it's given.
+- **Work-type (`f_WT`) combined with location** — not implemented, see Notes above.
