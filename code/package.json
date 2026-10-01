@@ -9,6 +9,7 @@
   "scripts": {
     "search": "node src/cli.js",
     "extract": "node src/stage2-cli.js",
-    "match": "node src/stage3-cli.js"
+    "match": "node src/stage3-cli.js",
+    "select-cv": "node src/stage4-cli.js"
   }
 }

@@ -246,6 +246,7 @@ export {
   SENIORITY_LEVELS,
   DEFAULT_STACK_SYNONYMS,
   CHANNEL_NAMES,
+  termRegex,
   matchStack,
   matchesSeniority,
   matchesLocation,

@@ -1,17 +1,52 @@
-# job-pipeline — Stage 1, 2 & 3
+# job-pipeline — Stage 1-4
 
-Node.js implementation of Stage 1 (Search), Stage 2 (Extract vacancy data) and Stage 3 (Match / fit) from [`../docs/flow.md`](../docs/flow.md).
+Node.js implementation of Stage 1 (Search), Stage 2 (Extract vacancy data), Stage 3 (Match / fit) and Stage 4 (Select CV) from [`../docs/flow.md`](../docs/flow.md).
 
 - **Stage 1** scrapes LinkedIn's public "guest" job search endpoint and returns a deduplicated list of job candidates.
 - **Stage 2** takes those candidates and fetches each vacancy's public page directly to extract full details (description, seniority/employment type, apply channel, recruiter contact, etc).
 - **Stage 3** takes Stage 2 vacancies plus match criteria and applies the deterministic hard-fit filters (seniority/location/employment type/salary/stack must-have), computes the apply-channel rating, and flags borderline stack cases for the (not-yet-implemented) Stage 3.5 LLM review.
+- **Stage 4** takes Stage 3 vacancies with `fitDecision: "pass"` and picks one CV from the fixed, pre-written set under [`../cv/`](../cv) — the track whose `## Skills` section overlaps most with the vacancy's must-have/nice-to-have stack. No generation or rewriting; see `../docs/flow.md`'s 2026-09-24 decision note under Stage 4.
 
-**Scope of this implementation:** API path only. No browser-automation fallback (`--method browser`), no dedup against the applications tracker, no `user_info.md` reading (criteria are passed as flags instead), no Stage 3.5 LLM review, no CV selection/apply/tracking — those depend on pipeline stages that don't exist yet (onboarding, Stage 3.5, Stage 4+). See each stage's "Limitations" section below.
+**Scope of this implementation:** API path only. No browser-automation fallback (`--method browser`), no dedup against the applications tracker, no `user_info.md` reading (criteria are passed as flags instead), no Stage 3.5 LLM review, no apply/tracking — those depend on pipeline stages that don't exist yet (onboarding, Stage 3.5, Stage 5+). See each stage's "Limitations" section below.
 
 ## Requirements
 
 - Node.js >= 18 (uses the built-in `fetch`)
 - No external dependencies
+
+## Running the pipeline
+
+Each stage reads JSON from stdin (or `--input <file>`) and writes JSON to stdout — nothing is saved to disk on its own. That gives two equivalent ways to chain stages:
+
+**Piped end-to-end** — nothing touches disk, nothing to clean up:
+
+```bash
+node src/cli.js --keywords "backend engineer" --location "United Kingdom" --count 5 \
+  | node src/stage2-cli.js \
+  | node src/stage3-cli.js --must-have node,typescript --location "United Kingdom" \
+  | node src/stage4-cli.js --must-have node,typescript
+```
+
+**Stage-by-stage, saving each stage's output with `>`** — slower to fetch again, but lets you re-run a later stage (e.g. Stage 3 with different `--must-have`/`--location`, or Stage 4 against an updated `cv/`) without re-hitting LinkedIn, and lets you inspect the intermediate JSON:
+
+```bash
+node src/cli.js --keywords "backend engineer" --location "United Kingdom" --count 5 > candidates.json
+node src/stage2-cli.js --input candidates.json > vacancies.json
+node src/stage3-cli.js --input vacancies.json --must-have node,typescript --location "United Kingdom" > fit.json
+node src/stage4-cli.js --input fit.json --must-have node,typescript
+```
+
+Stage 4 needs the *same* `--must-have`/`--nice-to-have` list you gave Stage 3 — it isn't carried through the JSON, since Stage 3's output only keeps the per-vacancy match results, not the criteria that produced them.
+
+You can also mix the two — e.g. pipe Stage 1 straight into Stage 2 but save *that* output for Stage 3:
+
+```bash
+node src/cli.js --keywords "backend engineer" --location "United Kingdom" --count 5 \
+  | node src/stage2-cli.js > vacancies.json
+node src/stage3-cli.js --input vacancies.json --must-have node,typescript
+```
+
+Each stage's own section below shows its specific flags; this section is just the hand-off pattern between them.
 
 ## Stage 1 — Search
 
@@ -117,6 +152,13 @@ node src/cli.js --keywords "backend engineer" --location "United Kingdom" --coun
 node src/stage2-cli.js --input candidates.json
 ```
 
+Redirect Stage 2's own output to a file if Stage 3 needs it later (e.g. to try several `--must-have`/`--location` combinations without re-fetching):
+
+```bash
+node src/stage2-cli.js --input candidates.json > vacancies.json
+node src/stage3-cli.js --input vacancies.json --must-have react,typescript
+```
+
 #### Options
 
 | flag | required | description |
@@ -218,7 +260,7 @@ node src/cli.js --keywords "backend engineer" --location "United Kingdom" --coun
   | node src/stage2-cli.js \
   | node src/stage3-cli.js --must-have node,typescript --location "United Kingdom" --channel 2
 
-# or from a saved Stage 2 file
+# or from a saved Stage 2 file (see "Running the pipeline" above for how to produce vacancies.json)
 node src/stage3-cli.js --input vacancies.json --seniority "Mid-Senior level" --must-have react,typescript
 ```
 
@@ -287,3 +329,80 @@ See `../docs/flow.md` Stage 3 for full context. Not covered by this code yet:
 - **Reading criteria from `user_info.md`** — onboarding isn't implemented yet, same as Stage 1; this CLI takes criteria as flags instead.
 - **Quota-aware pagination** — nothing here re-triggers Stage 1 when too few vacancies pass; this CLI just evaluates whatever list it's given.
 - **Work-type (`f_WT`) combined with location** — not implemented, see Notes above.
+
+## Stage 4 — Select CV
+
+Takes Stage 3 vacancies and, for each one with `fitDecision: "pass"`, picks one CV from the fixed set under [`../cv/`](../cv) — no generation, no rewriting, no rendering (`flow.md`'s 2026-09-24 decision: tailoring per vacancy was dropped as not worth the complexity). Any other vacancy (`skip` or `needsLlmReview`) is passed through unchanged.
+
+### How selection works
+
+1. Every subdirectory of `cv/` containing a `cv.md` is a CV track (track id = directory name — not hardcoded to `frontend`/`backend`/`aws`/`full_stack`, see `flow.md` Open questions).
+2. Each track's `## Skills` (or `## Core Skills`) section is parsed into a flat skill list — same `Category: skill, skill, skill` format as `../docs/user_data.md` specifies.
+3. **Vacancy title decides first.** The title is checked against a per-track list of title phrases (`frontend` ← "frontend"/"react"/"angular"/..., `backend` ← "backend"/"node"/..., etc. — see `DEFAULT_TRACK_TITLE_SIGNALS` in `selectCv.js`). A title naming **exactly one** track wins outright — "React Developer" picks `frontend` even if nothing in `--must-have` happens to overlap its skill list. The premise (`flow.md`'s own open question on this): a title this explicit is a stronger signal than one more stack keyword.
+4. **Skill overlap only breaks ties.** If the title names *several* tracks at once (a mixed-stack title like "Full Stack Engineer (React/Node)") or none at all, each candidate track's skill list is matched against the vacancy's `--must-have` + `--nice-to-have` stack using Stage 3's own keyword/synonym matcher (`matchStack` from `linkedinFit.js` — reused, not duplicated), and the highest-overlap track wins.
+5. If that's still a tie, or nothing matched anything, it falls back to `--fallback` (default `full_stack`).
+
+### CLI usage
+
+```bash
+# pipe directly from Stage 3
+node src/stage3-cli.js --input vacancies.json --must-have react,typescript \
+  | node src/stage4-cli.js --must-have react,typescript
+
+# or from a saved Stage 3 file
+node src/stage4-cli.js --input fit.json --must-have react,typescript --nice-to-have docker
+```
+
+#### Options
+
+| flag | required | description |
+|---|---|---|
+| `--input <file>` | no | read vacancies from this JSON file instead of stdin |
+| `--must-have <skills>` | one of these two | comma-separated must-have stack keywords — the same list given to Stage 3 |
+| `--nice-to-have <skills>` | one of these two | comma-separated nice-to-have stack keywords — the same list given to Stage 3 |
+| `--synonyms <file>` | no | JSON file of `{skill: [synonym, ...]}`, merged over the built-in defaults (same file you'd give Stage 3, for consistent matching) |
+| `--title-signals <file>` | no | JSON file of `{trackId: [titlePhrase, ...]}`, merged over `DEFAULT_TRACK_TITLE_SIGNALS` |
+| `--cv-dir <dir>` | no | directory of CV tracks (default: `../cv` relative to this package) |
+| `--fallback <track>` | no | track id used on a tie or on zero matches anywhere (default: `full_stack`) |
+| `--help` | no | print usage |
+
+### Programmatic usage
+
+```js
+import { discoverCvTracks, selectCv } from "./src/lib/selectCv.js";
+
+const tracks = await discoverCvTracks("../cv");
+const result = selectCv(tracks, ["react", "typescript", "docker"], {
+  title: "Senior React Developer", // optional — decides outright if it names exactly one track
+});
+```
+
+### Output schema
+
+Stage 3's vacancy object; vacancies with `fitDecision: "pass"` are augmented with:
+
+```ts
+{
+  selectedCv: string,          // winning track id, e.g. "frontend"
+  cvPath?: string,             // path to that track's already-rendered PDF
+  cvMatchScore: number,        // winning track's skill-overlap count — for diagnostics (flow.md, Stage 8 summary)
+  cvScores: Record<string, number>, // every track's skill-overlap count, for diagnosing ties/fallbacks
+  titleMatches: string[],      // track ids the vacancy title alone signaled, [] if none
+  decidedBy: "title" | "skills" | "fallback", // which rule actually picked the winner
+}
+```
+
+### Notes / gotchas
+
+- **Needs the same stack you gave Stage 3.** Stage 3's output doesn't carry its input criteria through — only the per-vacancy match results — so Stage 4 takes `--must-have`/`--nice-to-have` again rather than inferring them.
+- **Title beats skill overlap on purpose.** A vacancy titled "Frontend Engineer" or just "React Developer" picks `frontend` even with a weak/zero stack overlap — `decidedBy: "title"` in the output marks exactly when this happened. `titleMatches` also shows when a *mixed* title (e.g. "Full Stack Engineer (React/Node)") signaled more than one track at once, in which case skill overlap still breaks the tie among those.
+- **Skill parsing is line-wrap-safe.** A `cv.md` bullet that wraps onto a second physical line (e.g. a long `Cloud & DevOps:` list) is rejoined before splitting on `,`, so the wrap point can't fuse two skills together.
+- **Matching reuses Stage 3's synonym table and matcher verbatim** (`matchStack`/`DEFAULT_STACK_SYNONYMS` from `linkedinFit.js`) — pass the same `--synonyms <file.json>` to both stages to keep them consistent.
+- **Title signals are a small starter list**, keyed only by the track ids this repo actually has (`frontend`/`backend`/`aws`/`full_stack`) — a track with no entry in `DEFAULT_TRACK_TITLE_SIGNALS` just never wins on title alone. Pass `--title-signals <file.json>` to extend/override it.
+
+### Limitations / not implemented here
+
+See `../docs/flow.md` Stage 4 for full context. Not covered by this code yet:
+
+- **Optional per-CV human review** (`flow.md`'s "N-й показ" parameter) — flagged there as TBD on exact flag name/syntax, so not implemented here.
+- **Reading criteria from `user_info.md`** — same as Stages 1 and 3, criteria are flags instead.
