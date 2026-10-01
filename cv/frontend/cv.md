@@ -5,11 +5,11 @@ United Kingdom  |  leva13007@gmail.com  |  07552827084  |  linkedin.com/in/oleh-
 ## Summary
 
 Senior Frontend Developer with 9+ years of experience building scalable React and TypeScript applications, from complex UI systems to full end-to-end features.
-Experienced with React, TypeScript, GraphQL, Gatsby, Storybook, accessibility and performance optimisation, automated testing and CI/CD. Strong in system design, technical decision-making, code review and mentoring developers (10+ mentored to date). Also explores AI-driven engineering, and hosts IT Friday, a weekly developer community.
+Experienced with React, TypeScript, Redux, GraphQL, Gatsby, Storybook, accessibility and performance optimisation, automated testing and CI/CD. Strong in system design, technical decision-making, code review and mentoring developers (10+ mentored to date). Also explores AI-driven engineering, and hosts IT Friday, a weekly developer community.
 
 ## Core Skills
 
-* **Frontend:** React, TypeScript, JavaScript, GraphQL, Gatsby, Storybook, Accessibility (a11y), SSR/CSR/SSG
+* **Frontend:** React, TypeScript, JavaScript, Redux/RTK, Gatsby, Storybook, Accessibility (a11y), SSR/CSR/SSG
 * **Backend (supporting):** Node.js, NestJS, REST/GraphQL API design, SQL
 * **Cloud & DevOps:** AWS (Lambda, ECS, S3, CloudFormation/SAM, Step Functions, SQS/SNS, DynamoDB, IAM,
 Cognito), CI/CD (CodeBuild/CodePipeline, GitHub Actions), Docker
